@@ -1,40 +1,28 @@
+# Stage 1: Build the application
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+
+WORKDIR /app
+
+# Copy the pom.xml and download dependencies (for caching)
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy the rest of the application source code
+COPY . .
+
+# Package the application
+RUN mvn clean package -DskipTests
+
+# Stage 2: Run the application
 FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first for better layer caching
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+# Copy the packaged jar from the build stage
+COPY --from=build /app/target/*.jar app.jar
 
-# Make the Maven wrapper executable
-RUN chmod +x ./mvnw
+# Expose port (commonly 8080 for Spring Boot)
+EXPOSE 8080
 
-# Download dependencies (this layer will be cached unless pom.xml changes)
-RUN ./mvnw dependency:go-offline -B
-
-# Copy the source code
-COPY src ./src
-
-# Build the application
-RUN ./mvnw package -DskipTests
-
-# Use a smaller runtime image
-FROM eclipse-temurin:17-jre-alpine
-
-WORKDIR /app
-
-# Copy the built JAR file from the build stage
-COPY --from=0 /app/target/*.jar app.jar
-
-# Environment variables that can be overridden at runtime
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/finance-manager
-ENV SPRING_DATASOURCE_USERNAME=postgres
-ENV SPRING_DATASOURCE_PASSWORD=root
-ENV SERVER_PORT=8080
-
-# Expose the port the app runs on
-EXPOSE ${SERVER_PORT}
-
-# Command to run the application
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
