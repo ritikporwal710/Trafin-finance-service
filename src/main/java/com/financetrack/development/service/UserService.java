@@ -185,7 +185,7 @@ public int dueDays(Date dueDate) {
                 // .secure(!isDevelopment()) // Use `false` for localhost/testing
                 .secure(true)
                 .path("/")
-                .maxAge(Duration.ofHours(24)) // 24 hours
+                .maxAge(Duration.ofDays(365)) // 365 days
                 // .sameSite("Strict")
                 .sameSite("None")
                 .build();
