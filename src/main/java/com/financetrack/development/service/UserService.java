@@ -162,8 +162,6 @@ public int dueDays(Date dueDate) {
 
     public ResponseEntity<String> loginUser(LoginDTO loginDTO) {
         try {
-            
-       
         String email = loginDTO.getEmail();
         String password = loginDTO.getPassword();
     
@@ -185,45 +183,14 @@ public int dueDays(Date dueDate) {
         ResponseCookie cookie = ResponseCookie.from("token", token)
                 .httpOnly(true)
                 // .secure(!isDevelopment()) // Use `false` for localhost/testing
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(Duration.ofHours(24)) // 24 hours
-                .sameSite("Strict")
+                // .sameSite("Strict")
+                .sameSite("None")
                 .build();
 
         // System.out.println("cookie in service: " + cookie);
-       
-        List<Bill> bills = billRepository.findBillsDueInNext30Days(user.getId());
-
-        // System.out.println("bills getting: " + bills);
-
-        // notificationRepository.deleteAllByUserId(user.getId());
-
-        List<Bill> afterBills = billRepository.findBillsDueInNext30Days(user.getId());
-
-
-        // System.out.println("notifications deleting: " + afterBills);
-
-        // for (Bill bill : bills) {
-        //     System.out.println("bill first one: " + bill);
-        //     Notification notification = new Notification();
-        //     notification.setName(bill.getBillName());
-        //     System.out.println("notification name: " + notification.getName());
-        //     notification.setAmount(bill.getAmount());
-        //     System.out.println("notification amount: " + notification.getAmount());
-        //     System.out.println("notification dueDate: " + bill.getDueDate());
-        //     System.out.println("notification dueDays: " + dueDays(bill.getDueDate()));
-        //     notification.setDueDays(dueDays(bill.getDueDate()));
-        //     System.out.println("notification dueDays: " + notification.getDueDays());
-        //     notification.setStatus("active");
-        //     System.out.println("notification status: " + notification.getStatus());
-        //     notification.setTotalLimit(bill.getAmount());
-        //     System.out.println("notification totalLimit: " + notification.getTotalLimit());
-        //     notification.setType("reminder");
-        //     notification.setUser(user);
-        //     System.out.println("notification after all details: " + notification);
-        //     notificationRepository.save(notification);
-        // }
 
     
         return ResponseEntity.ok()
@@ -239,15 +206,6 @@ public int dueDays(Date dueDate) {
     }
     
 
-    // public String logoutUser(){
-    //     Cookie cookie = new Cookie("token", null);
-    //     cookie.setHttpOnly(true);
-    //     cookie.setSecure(true); // true if using HTTPS
-    //     cookie.setPath("/");
-    //     cookie.setMaxAge(0);    
-
-    //     return "Logout successful";
-    // }
     public ResponseEntity<String> logoutUser() {
         // Create multiple cookies to ensure all variations are cleared
         ResponseCookie clearCookie1 = ResponseCookie.from("token", "")
