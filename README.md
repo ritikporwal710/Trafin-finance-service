@@ -63,7 +63,7 @@ Trafin helps users manage their personal finances by tracking salary, expenses, 
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/trafin.git
+   git clone https://github.com/ritikporwal710/Trafin-finance-service
    cd trafin
    ```
 
@@ -82,7 +82,7 @@ Trafin helps users manage their personal finances by tracking salary, expenses, 
    ./mvnw spring-boot:run
    ```
 
-4. The application will be available at `http://localhost:8080`
+4. The application will be available at `https://trafin-client.onrender.com/`
 
 ### Environment Configuration
 
